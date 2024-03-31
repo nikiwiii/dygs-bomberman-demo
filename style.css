@@ -1,0 +1,74 @@
+@font-face {
+  font-family: bomberFont;
+  src: url(bomberfont.otf);
+}
+* {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+body {
+  overflow: hidden;
+  background-color: black;
+}
+div,
+canvas {
+  height: 54px;
+  width: 54px;
+  background-size: contain;
+  image-rendering: pixelated;
+}
+#test {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: calc(11* 54px / 2);
+}
+.container {
+  display: flex;
+  width: max-content;
+  flex-direction: row;
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+.sprite, .baloon, .explosion {
+  margin-left: calc(50% - 21* 54px / 2);
+  margin-top: calc(11* 54px / 2);
+}
+.baloon {
+  position: absolute;
+  transition: linear 1s;
+}
+.sprite {
+  position: absolute;
+  z-index: 96;
+}
+.explosion {
+  position: absolute;
+  z-index: 98;
+}
+#player,
+#dead_guy {
+  transform: translate(12px, 20px);
+  z-index: 100;
+}
+#bomb {
+  z-index: 97;
+}
+.stone {
+  z-index: 1000;
+}
+h1 {
+  font-family: bomberFont;
+  position: absolute;
+  font-size: 100px;
+  top: 95px;
+  left: 50%;
+  letter-spacing: 2px;
+  transform: translateX(-50%);
+  color: lightgray;
+  text-shadow: 5px 5px 0px green;
+}
