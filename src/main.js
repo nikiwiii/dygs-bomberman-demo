@@ -12,7 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { Elements } from './elements.js';
 import { Anim } from './engine.js';
 import { Helper } from './helpers.js';
-import frameData from './data.json' assert {type: 'json'};
+import frameData from './data.json' with {type: 'json'};
 const elements = new Elements();
 const helper = new Helper();
 let gameBoard = [];
