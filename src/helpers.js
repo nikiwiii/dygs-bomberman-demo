@@ -27,7 +27,11 @@ export class Helper {
         while (count >= 0) {
             const x = Math.floor(Math.random() * (width - 1));
             const y = Math.floor(Math.random() * (height - 1));
-            if (gameBoard[y][x] == 2 && x + y > 3 && !busy.includes(`${x},${y};`)) {
+            if ((y !== 0 ||
+                y !== height - 1 ||
+                x !== 0 ||
+                x !== width - 1 ||
+                (y % 2 !== 0 && x % 2 !== 0)) && x + y > 3 && !busy.includes(`${x},${y};`)) {
                 pos.push([x, y]);
                 busy += `${x},${y};`;
                 count--;

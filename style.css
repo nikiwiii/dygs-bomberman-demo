@@ -37,6 +37,7 @@ body {
 .sprite, .baloon, .explosion {
   margin-left: calc(50% - 21* 54px / 2);
   margin-top: calc(11* 54px / 2);
+  filter: drop-shadow(2px 2px 1px black);
 }
 .baloon {
   position: absolute;
@@ -49,6 +50,7 @@ body {
 .explosion {
   position: absolute;
   z-index: 98;
+  filter: drop-shadow(0px 0px 20px orange);
 }
 #player,
 #dead_guy {
@@ -60,6 +62,8 @@ body {
 }
 .stone {
   z-index: 1000;
+  filter: drop-shadow(2px 2px 1px black);
+  background-size: cover;
 }
 h1 {
   font-family: bomberFont;
@@ -71,4 +75,29 @@ h1 {
   transform: translateX(-50%);
   color: lightgray;
   text-shadow: 5px 5px 0px green;
+}
+.controls {
+  display: flex;
+  transform: translate(-50%,50%);
+  position: absolute;
+  left: 50%;
+  top: 865px;
+  width: 1130px;
+  justify-content: space-between;
+}
+.controls button {
+  width: 100%;
+  border-top: 3px solid red;
+  border-left: 3px solid red;
+  background-color: darkred;
+  color: white;
+  font-family: bomberFont;
+  font-size: 30px;
+  letter-spacing: 2px;
+}
+.unstarted canvas {
+  filter: sepia(1) hue-rotate(120deg);
+}
+.controls button span {
+  color:blue
 }

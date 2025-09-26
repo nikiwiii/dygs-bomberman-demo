@@ -12,7 +12,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { Elements } from './elements.js';
 import { Anim } from './engine.js';
 import { Helper } from './helpers.js';
-import frameData from './data.json' with {type: 'json'};
+// @ts-ignore
+import frameData from './data.json' with { type: "json" };
 const elements = new Elements();
 const helper = new Helper();
 let gameBoard = [];
@@ -34,7 +35,12 @@ let moveInterval;
 let powered = false;
 let powUpPose;
 let flamePoses = [];
+let started = false;
+let frameTimeOut;
 window.onload = () => {
+    initGame();
+};
+const initGame = () => {
     document.querySelector('#app').innerHTML = `<div id="test"></div>`;
     body = document.querySelector('#test');
     data = frameData;
@@ -75,6 +81,13 @@ window.onload = () => {
             ],
         };
         anim();
+        document.getElementById("starter").addEventListener("click", start);
+    };
+};
+const start = () => {
+    var _a;
+    if (!started) {
+        (_a = document.querySelector("body")) === null || _a === void 0 ? void 0 : _a.classList.remove("unstarted");
         activateControls();
         baloonMover = setInterval(() => {
             allSprites.baloons.forEach((e) => {
@@ -82,7 +95,18 @@ window.onload = () => {
             });
         }, 1000);
         moveInterval = setInterval(allatPlayerMoveShi, 50);
-    };
+        started = true;
+    }
+    else {
+        removeEventListener('keypress', handleBinds);
+        clearInterval(baloonMover);
+        clearInterval(moveInterval);
+        clearTimeout(frameTimeOut);
+        document.querySelector("body").classList.add("unstarted");
+        gameBoard = [];
+        initGame();
+        started = false;
+    }
 };
 const anim = () => {
     allSprites.bomb.moving ? allSprites.bomb.goAnim() : null;
@@ -110,7 +134,7 @@ const anim = () => {
         allSprites.desBrick[i].goAnim();
     }
     isDead ? allSprites.dead.goAnim() : null;
-    setTimeout(window.requestAnimationFrame, 1000 / 30, anim); // ~30 klatek/s
+    frameTimeOut = setTimeout(window.requestAnimationFrame, 1000 / 30, anim); // ~30 klatek/s
 };
 const createGameBoard = (w, h) => {
     for (let i = 0; i < h; i++) {
@@ -229,7 +253,7 @@ const allatPlayerMoveShi = () => {
         if (powUpPose[0] === allSprites.player.pos[0] &&
             powUpPose[1] === allSprites.player.pos[1]) {
             document.getElementById('power').style.display = 'none';
-            document.getElementById('player').style.filter = 'hue-rotate(163deg)';
+            document.getElementById('player').style.filter = 'hue-rotate(163deg) drop-shadow(0px 0px 20px orange)';
             powUpPose = [0, 0];
             powered = true;
         }
@@ -311,6 +335,7 @@ const killPlayer = () => {
     allSprites.player.vanish();
     allSprites.dead.el.style.top = allSprites.player.el.style.top;
     allSprites.dead.el.style.left = allSprites.player.el.style.left;
+    allSprites.dead.el.style.opacity = "100%";
     allSprites.dead.moving = true;
     removeEventListener('keypress', handleBinds);
     clearInterval(baloonMover);

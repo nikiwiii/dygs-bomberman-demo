@@ -35,7 +35,7 @@ export class Anim {
                 ? 'explosion'
                 : 'sprite'
             : this.el.className;
-        document.querySelectorAll('body')[0].appendChild(this.el);
+        document.getElementById('test').appendChild(this.el);
         this.currMove = this.frames[this.currDir];
         this.goTo(pos[0], pos[1]);
     }
@@ -56,6 +56,7 @@ export class Anim {
             const el = document.getElementById(y + ',' + x);
             this.el.style.top = el.style.top;
             this.el.style.left = el.style.left;
+            x == 0 && y == 0 ? this.el.style.opacity = "0%" : this.el.style.opacity = "100%";
         }
         this.pos = [x, y];
     }

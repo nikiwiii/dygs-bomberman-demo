@@ -6,9 +6,19 @@
     <link rel="stylesheet" href="style.css">
     <title>dyg's bomberman (TS portf.)</title>
   </head>
-  <body>
+  <body class="unstarted">
     <h1>DYG'S&nbsp;BOMBERMAN</h1>
-    <div id="app"></div>
+    <div id="app">
+      <div id="sprites"></div>
+    </div>
+    <div class="controls">
+      <button id="starter">START</button>
+      <button>W-<span>up</span></button>
+      <button>A-<span>left</span></button>
+      <button>S-<span>down</span></button>
+      <button>D-<span>right</span></button>
+      <button>Z-<span>bomb</span></button>
+    </div>
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>
