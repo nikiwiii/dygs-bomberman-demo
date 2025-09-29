@@ -13,9 +13,9 @@ import { Helper } from './helpers.js';
 // @ts-ignore
 import frameData from './data.json' with { type: "json" };
 const elements = new Elements();
-const helper = new Helper();
+const help = new Helper();
 let gameBoard = [];
-const dsplySize = helper.size;
+const dsplySize = help.size;
 let allSprites; // tablica z animacjami
 let body;
 let baloonCount;
@@ -37,14 +37,14 @@ let time = 0;
 let timeCounter = 0;
 let score = 0;
 let img;
-const nodes = ["0,1", "0,2", "0,3"];
+const nodes = ["0,9", "0,10", "0,11"];
 let frameInterval = 0;
 const modes = [
-    { width: 21, height: 11, opp: 1 },
+    { width: 21, height: 9, opp: 10 },
     { width: 21, height: 11, opp: 20 },
     { width: 21, height: 21, opp: 50 },
 ];
-let currMode = 1;
+let currMode = 0;
 let currKills = 0;
 window.onload = () => {
     activateControls();
@@ -52,49 +52,52 @@ window.onload = () => {
 };
 const initGame = () => {
     var _a;
-    helper.id("end-screen").style.top = "-100%";
+    help.id("end-screen").style.top = "-100%";
     time = 0;
+    score = 0;
     powered = false;
     started = false;
     isDead = false;
-    (_a = helper.query("body")) === null || _a === void 0 ? void 0 : _a.classList.add("unstarted");
-    document.documentElement.style.setProperty('--size', helper.size + "px");
+    const colors = ["green", "#5c8000", "#806400"];
+    (_a = help.query("body")) === null || _a === void 0 ? void 0 : _a.classList.add("unstarted");
+    document.documentElement.style.setProperty('--size', help.size + "px");
     document.documentElement.style.setProperty('--gbwidth', modes[currMode].width.toString());
     document.documentElement.style.setProperty('--gbheight', modes[currMode].height.toString());
+    document.documentElement.style.setProperty('--mode', colors[currMode]);
     baloonCount = modes[currMode].opp;
-    helper.query('#killcount').innerHTML = `0/${modes[currMode].opp}`;
-    helper.query('#app').innerHTML = `<div id="test"></div>`;
-    body = helper.query('#test');
+    help.query('#killcount').innerHTML = `0/${modes[currMode].opp}`;
+    help.query('#app').innerHTML = `<div id="test"></div>`;
+    body = help.query('#test');
     data = frameData;
     img = new Image();
     img.src = '../img/sheet.png';
     gameBoard = [];
     createGameBoard(modes[currMode].width, modes[currMode].height);
-    helper.busy = "";
+    help.busy = "";
     placeBricks(Math.ceil(modes[currMode].width * modes[currMode].height / 10));
     img.onload = () => {
         const modes = ["easy", "mid", "hard"];
         nodes.forEach((e, i) => {
-            helper.id(e).innerHTML = `<p>${modes[i][0]}</p>`;
-            helper.id(e).classList.add("modes");
-            helper.id(e).onclick = () => modeChoice(i);
-            i === currMode ? helper.id(e).classList.add("active") : null;
+            help.id(e).innerHTML = `<p>${modes[i][0]}</p>`;
+            help.id(e).classList.add("modes");
+            help.id(e).onclick = () => modeChoice(i);
+            i === currMode ? help.id(e).classList.add("active") : null;
         });
         clearTimeout(frameInterval);
         clearInterval(baloonMover);
         clearInterval(moveInterval);
         spawnSprites();
-        helper.id("starter").addEventListener("click", start);
+        help.id("starter").addEventListener("click", start);
     };
 };
 const modeChoice = (num) => {
     currMode = num;
-    nodes.forEach((e) => helper.id(e).classList.remove("active"));
-    helper.id("0," + (num + 1)).classList.add("active");
+    nodes.forEach((e) => help.id(e).classList.remove("active"));
+    help.id("0," + (num + 1)).classList.add("active");
     initGame();
 };
 const spawnSprites = () => {
-    const baloonPoses = helper.getNRandomFreePositions(baloonCount, modes[currMode].width, modes[currMode].height);
+    const baloonPoses = help.getNRandomFreePositions(baloonCount, modes[currMode].width, modes[currMode].height);
     let imgs = [];
     for (let i = 0; i < baloonCount; i++)
         imgs.push(new Anim(img, data.baloon, `baloon${i}`, baloonPoses[i], 'right', true));
@@ -129,7 +132,7 @@ const spawnSprites = () => {
 const start = () => {
     var _a;
     if (!started) {
-        (_a = helper.query("body")) === null || _a === void 0 ? void 0 : _a.classList.remove("unstarted");
+        (_a = help.query("body")) === null || _a === void 0 ? void 0 : _a.classList.remove("unstarted");
         baloonMover = setInterval(() => {
             allSprites.baloons.forEach((e) => {
                 ActivateBaloon(e, e.pos);
@@ -138,6 +141,8 @@ const start = () => {
         moveInterval = setInterval(allatPlayerMoveShi, 50);
         started = true;
         timeCounter = setInterval(() => time++, 1000);
+        anim();
+        // help.id("test")!.style.transform = `translate(calc(50% - ${help.size}px - ${allSprites.player.el.style.left}), - ${allSprites.player.el.style.top})`
     }
     else {
         initGame();
@@ -167,12 +172,12 @@ const anim = () => {
         allSprites.desBrick[i].goAnim();
     }
     isDead ? allSprites.dead.goAnim() : null;
-    frameInterval = setTimeout(window.requestAnimationFrame, 1000 / 30, anim); // ~30 klatek/s
+    frameInterval = started ? setTimeout(window.requestAnimationFrame, 1000 / 30, anim) : 0; // ~30 klatek/s
 };
 const createGameBoard = (w, h) => {
     for (let i = 0; i < h; i++) {
         const container = document.createElement('div');
-        const tileTypes = [elements.grassUrl, elements.stoneUrl];
+        const tileTypes = ["", elements.stoneUrl];
         container.className = 'container';
         gameBoard.push([]);
         for (let j = 0; j < w; j++) {
@@ -183,7 +188,7 @@ const createGameBoard = (w, h) => {
                 (i % 2 === 0 && j % 2 === 0)
                 ? 3
                 : 2;
-            const field = helper.newTile(`${i},${j}`, 'field', tileTypes[el % 2], j, i, dsplySize);
+            const field = help.newTile(`${i},${j}`, 'field', tileTypes[el % 2], j, i, dsplySize);
             el === 3 ? field.classList.add('stone') : null;
             container.appendChild(field);
             gameBoard[i].push(el);
@@ -192,15 +197,15 @@ const createGameBoard = (w, h) => {
     }
 };
 const placeBricks = (n) => {
-    brickPoses = helper.getNRandomFreePositions(n, modes[currMode].width, modes[currMode].height);
+    brickPoses = help.getNRandomFreePositions(n, modes[currMode].width, modes[currMode].height);
     powUpPose = brickPoses[Math.floor(Math.random() * n)];
     brickPoses.forEach((e) => {
         if (e[0] == powUpPose[0] && e[1] == powUpPose[1]) {
             console.log(powUpPose);
-            const power = helper.newTile('power', 'sprite', elements.powerUrl, e[0], e[1], dsplySize);
+            const power = help.newTile('power', 'sprite', elements.powerUrl, e[0], e[1], dsplySize);
             body.appendChild(power);
         }
-        const brick = helper.newTile(`brick${e[1]},${e[0]}`, 'sprite', elements.brickUrl, e[0], e[1], dsplySize);
+        const brick = help.newTile(`brick${e[1]},${e[0]}`, 'sprite', elements.brickUrl, e[0], e[1], dsplySize);
         gameBoard[e[1]][e[0]] = 4;
         body.appendChild(brick);
     });
@@ -243,28 +248,28 @@ const allatPlayerMoveShi = () => {
             let temp;
             switch (key) {
                 case moveBinds[0]:
-                    temp = helper.checkMoveAvail(hb.lt[1], hb.lt[0] - 2 * velocity, hb.lb[1], hb.lb[0] - 2 * velocity, -velocity, gameBoard, dsplySize);
+                    temp = help.checkMoveAvail(hb.lt[1], hb.lt[0] - 2 * velocity, hb.lb[1], hb.lb[0] - 2 * velocity, -velocity, gameBoard, dsplySize);
                     if (typeof temp === 'string')
                         directions[0] = temp;
                     else
                         xyMove[0] = temp;
                     break;
                 case moveBinds[1]:
-                    temp = helper.checkMoveAvail(hb.lt[1] - 2 * velocity, hb.lt[0], hb.rt[1] - 2 * velocity, hb.rt[0], -velocity, gameBoard, dsplySize);
+                    temp = help.checkMoveAvail(hb.lt[1] - 2 * velocity, hb.lt[0], hb.rt[1] - 2 * velocity, hb.rt[0], -velocity, gameBoard, dsplySize);
                     if (typeof temp === 'string')
                         directions[1] = temp;
                     else
                         xyMove[1] = temp;
                     break;
                 case moveBinds[2]:
-                    temp = helper.checkMoveAvail(hb.rt[1], hb.rt[0] + velocity, hb.rb[1], hb.rb[0] + velocity, velocity, gameBoard, dsplySize);
+                    temp = help.checkMoveAvail(hb.rt[1], hb.rt[0] + velocity, hb.rb[1], hb.rb[0] + velocity, velocity, gameBoard, dsplySize);
                     if (typeof temp === 'string')
                         directions[2] = temp;
                     else
                         xyMove[0] = temp;
                     break;
                 case moveBinds[3]:
-                    temp = helper.checkMoveAvail(hb.lb[1] + velocity, hb.lb[0], hb.rb[1] + velocity, hb.rb[0], velocity, gameBoard, dsplySize);
+                    temp = help.checkMoveAvail(hb.lb[1] + velocity, hb.lb[0], hb.rb[1] + velocity, hb.rb[0], velocity, gameBoard, dsplySize);
                     if (typeof temp === 'string')
                         directions[3] = temp;
                     else
@@ -285,9 +290,9 @@ const allatPlayerMoveShi = () => {
         });
         if (powUpPose[0] === allSprites.player.pos[0] &&
             powUpPose[1] === allSprites.player.pos[1]) {
-            helper.id('power').style.display = 'none';
-            helper.id('player').style.filter = 'hue-rotate(163deg) drop-shadow(0px 0px 20px orange)';
-            helper.id('player').style.animation = 'power infinite 1s ease-in-out';
+            help.id('power').style.display = 'none';
+            help.id('player').style.filter = 'hue-rotate(163deg) drop-shadow(0px 0px 20px orange)';
+            help.id('player').style.animation = 'power infinite 1s ease-in-out';
             powUpPose = [0, 0];
             powered = true;
         }
@@ -336,7 +341,7 @@ const explode = (x, y) => __awaiter(void 0, void 0, void 0, function* () {
 const tileExplosion = (x, y, i) => {
     if (gameBoard[y][x] !== 3 && x > 0 && y > 0 && x < modes[currMode].width && y < modes[currMode].height) {
         if (gameBoard[y][x] == 4) {
-            helper.id(`brick${y},${x}`).style.display = 'none';
+            help.id(`brick${y},${x}`).style.display = 'none';
             gameBoard[y][x] = 2;
             allSprites.desBrick[desBrickCount].goTo(x, y);
             allSprites.desBrick[desBrickCount].moving = true;
@@ -382,7 +387,7 @@ const killBaloon = (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.currDir = 'dead';
     e.actFrame = 0;
     e.repeat = false;
-    helper.query('#killcount').innerHTML = `${modes[currMode].opp - baloonCount}/${modes[currMode].opp}`;
+    help.query('#killcount').innerHTML = `${modes[currMode].opp - baloonCount}/${modes[currMode].opp}`;
     score += currKills * 50;
     if (baloonCount == 0)
         endGame();
@@ -390,40 +395,41 @@ const killBaloon = (e) => __awaiter(void 0, void 0, void 0, function* () {
         case 1:
             break;
         case 2:
-            comment("dk", e);
+            comment("dk");
             break;
         case 3:
-            comment("tk", e);
+            comment("tk");
             break;
         case 4:
-            comment("qk", e);
+            comment("qk");
             break;
         default:
-            comment("ik", e);
+            comment("ik");
     }
 });
-const comment = (what, e) => {
-    helper.id(what).classList.remove("off");
-    helper.id(what).style.top = e.el.style.top;
-    helper.id(what).style.left = e.el.style.left;
+const comment = (what) => {
+    console.log(help.id(what).classList);
+    help.id(what).classList.remove("off");
+    help.id(what).style.top = "37vh";
+    help.id(what).style.left = "50%";
     setTimeout(() => {
-        helper.id(what).classList.add("off");
-        helper.id(what).style.top = "0";
+        help.id(what).classList.add("off");
+        help.id(what).style.top = "0";
     }, 2000);
 };
 const endGame = () => {
-    helper.id("end-screen").style.top = "50%";
+    help.id("end-screen").style.top = "50%";
     clearInterval(timeCounter);
     if (!isDead) {
-        helper.query("#img").src = "img/bombergif.gif";
-        helper.id("result").innerHTML = "congrats";
+        help.query("#img").src = "img/bombergif.gif";
+        help.id("result").innerHTML = "congrats";
     }
     else {
-        helper.query("#img").src = "img/baloongif.gif";
-        helper.id("result").innerHTML = "get good";
+        help.query("#img").src = "img/baloongif.gif";
+        help.id("result").innerHTML = "get good";
     }
-    helper.id("time").innerHTML = `${time.toString()}s`;
-    helper.id("score").innerHTML = score.toString();
-    helper.id("powered").innerHTML = powered ? "yes" : "no";
-    // helper.id("test")!.style.filter = "brightness(50%)"
+    help.id("time").innerHTML = `${time.toString()}s`;
+    help.id("score").innerHTML = score.toString();
+    help.id("powered").innerHTML = powered ? "yes" : "no";
+    // help.id("test")!.style.filter = "brightness(50%)"
 };

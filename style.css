@@ -10,6 +10,7 @@
   --size: 0;
   --gbwidth: 0;
   --gbheight: 0;
+  --mode: green;
 }
 * {
   margin: 0;
@@ -27,12 +28,20 @@ canvas {
   background-size: contain;
   image-rendering: pixelated;
 }
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 70vh;
+}
 #test {
-  width: 100vw;
+  width: fit-content;
+  transform: translate(0,0);
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: calc(11 * var(--size) / 2);
+  /* margin-top: calc(11 * var(--size) / 2); */
 }
 .container {
   display: flex;
@@ -45,7 +54,7 @@ body {
 }
 .sprite, .baloon, .explosion {
   margin-left: calc(50% - var(--gbwidth)* var(--size) / 2);
-  margin-top: calc(11 * var(--size) / 2);
+  /* margin-top: calc(11 * var(--size) / 2); */
   filter: drop-shadow(2px 2px 1px black);
 }
 .baloon {
@@ -64,14 +73,14 @@ body {
 }
 #player,
 #dead_guy {
-  transform: translate(calc(var(--size) * 0.2), calc(var(--size) * 0.37));
+  transform: translate(calc(var(--size) * 0.25), calc(var(--size) * 0.37));
   z-index: 98;
 }
 #bomb {
   z-index: 96;
 }
 .stone {
-  z-index: 94;
+  z-index: 100;
   filter: drop-shadow(2px 2px 1px black);
   background-size: cover;
 }
@@ -87,13 +96,15 @@ body {
   text-shadow: 5px 5px 0px green;
 }
 .controls {
+  width: fit-content;
+  background-color: black;
+  padding: 4px;
   display: flex;
   transform: translate(-50%, 0);
   position: absolute;
   left: 50%;
   top: calc(9 * var(--size) / 2);
-  width: calc(var(--gbwidth) * var(--size));
-  justify-content: space-between;
+  gap: 4px;
 }
 .controls button {
   width: max-content;
@@ -131,7 +142,7 @@ body {
   height: fit-content;
   border: 3px solid red;
   display: flex;
-  z-index: 100;
+  z-index: 101;
   padding: 20px;
 }
 #end-screen img {
@@ -175,14 +186,20 @@ h1 {
 .active:hover {
   filter: invert(1) brightness(150%);
 }
-.modes:nth-of-type(2) {
+.modes:nth-of-type(10) {
   color: green;
 }
-.modes:nth-of-type(3) {
+.modes:nth-of-type(11) {
   color: orange;
 }
-.modes:nth-of-type(4) {
+.modes:nth-of-type(12) {
   color: black;
+}
+.field {
+  background: var(--mode);
+}
+.stone {
+  background-size: cover;
 }
 .off {
   opacity: 0 !important;
@@ -195,25 +212,23 @@ h1 {
   left: 50%;
   transform: translate(-50%, 0);
   z-index: 1000;
-  margin-left: calc(50% - var(--gbwidth)* var(--size) / 2);
-  margin-top: calc(11 * var(--size) / 2);
   opacity: 100%;
   position: absolute;
   color: white;
 }
 #tk {
   color: orange;
-  transform: translate(-50%, 30px);
+  transform: translate(-50%, calc(var(--size) * 0.5));
   animation: wobble-tk .1s ease-in-out infinite;
 }
 #qk {
   color: red;
-  transform: translate(-50%, 60px);
+  transform: translate(-50%, var(--size));
   animation: wobble-qk .1s ease-in-out infinite;
 }
 #ik {
   color: black;
-  transform: translate(-50%, 90px);
+  transform: translate(-50%, calc(var(--size) * 1.5));
   animation: wobble-ik .1s ease-in-out infinite;
 }
 
@@ -230,34 +245,34 @@ h1 {
 }
 @keyframes wobble-tk {
   0% {
-    transform: translate(-50%, 60px);
+    transform: translate(-50%, calc(var(--size) * 0.5));
   }
   50% {
-    transform: translate(-49%, 58px);
+    transform: translate(-49%, calc(var(--size) * 0.5 - 2px));
   }
   100% {
-    transform: translate(-50%, 60px);
+    transform: translate(-50%, calc(var(--size) * 0.5));
   }
 }
 @keyframes wobble-qk {
   0% {
-    transform: translate(-50%, 60px);
+    transform: translate(-50%, var(--size));
   }
   50% {
-    transform: translate(-48%, 55px);
+    transform: translate(-48%, calc(var(--size) - 5px));
   }
   100% {
-    transform: translate(-50%, 60px);
+    transform: translate(-50%, var(--size));
   }
 }
 @keyframes wobble-ik {
   0% {
-    transform: translate(-50%, 90px);
+    transform: translate(-50%, calc(var(--size) * 1.5));
   }
   50% {
-    transform: translate(-47%, 80px);
+    transform: translate(-47%, calc(var(--size) * 1.5 - 10px));
   }
   100% {
-    transform: translate(-50%, 90px);
+    transform: translate(-50%, calc(var(--size) * 1.5));
   }
 }

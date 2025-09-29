@@ -1,5 +1,6 @@
 import { Helper } from './helpers.js';
-const dsplySize = new Helper().size;
+const helper = new Helper()
+const dsplySize = helper.size;
 const canSize = 16;
 
 export class Anim {
@@ -25,15 +26,15 @@ export class Anim {
     moving: boolean
   ) {
     this.img = img; // spritesheet
-    this.tickNumber = 0; // aktualny tick (u mnie 60/s)
+    this.tickNumber = 0; // aktualny tick
     this.actFrame = 0; // aktualnie renderowana klatka
-    this.destId = destId; // id elementu w DOM'ie do wyświetlania klatek (u mnie przez css background-image)
+    this.destId = destId;
     this.pos = pos;
     this.currDir = currDir;
     this.moving = moving;
-    ///// dane z json'a //////
+    //json
     this.frames = ob.frames; // tablica z klatkami
-    this.times = ob.times; // tablica z czasami wyświetleń klatki [u mnie czas w tick'ach]
+    this.times = ob.times; // tablica z czasami wyświetleń klatki
     this.repeat = ob.repeat; // czy animacja ma się powtarzać
 
     this.el = document.createElement('canvas');
@@ -104,6 +105,8 @@ export class Anim {
     top = top + xyMove[1];
     this.el.style.left = left + 'px';
     this.el.style.top = top + 'px';
+    helper.id("test")!.style.transform = `translate(calc(50% - ${helper.size}px - ${left}px),${-top}px)`
+
     dir !== 'stay' ? (this.currDir = dir) : null;
     this.pos = [
       Math.round((left + 14) / dsplySize),

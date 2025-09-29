@@ -10,9 +10,6 @@ export class Elements {
             ctx.drawImage(img, 48, 48, 16, 16, 0, 0, 16, 16);
             this.stoneUrl = canvas.toDataURL();
             ctx.reset();
-            ctx.drawImage(img, 0, 65, 16, 16, 0, 0, 16, 16);
-            this.grassUrl = canvas.toDataURL();
-            ctx.reset();
             ctx.drawImage(img, 64, 48, 16, 16, 0, 0, 16, 16);
             this.brickUrl = canvas.toDataURL();
             ctx.reset();
