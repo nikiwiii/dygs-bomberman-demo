@@ -15,7 +15,7 @@ export class Anim {
   moving: boolean;
   hitbox?: object;
   private currMove;
-  private el;
+  public el;
   constructor(
     img: CanvasImageSource,
     ob: { frames: any; times: any; repeat: any },
@@ -46,7 +46,7 @@ export class Anim {
         lb: [pos[0] * (dsplySize / 2), (pos[1] + 1) * (dsplySize / 2)],
         rb: [(pos[0] + 1) * (dsplySize / 2), (pos[1] + 1) * (dsplySize / 2)],
       };
-    } else if (this.destId[0] === 'b' && this.destId.length == 7) {
+    } else if (this.destId[0] === 'b' && this.destId[1] === 'a') {
       this.currDir = Math.random() >= 0.5 ? 'right' : 'left';
       this.el.className = 'baloon';
     }

@@ -7,7 +7,7 @@
     <title>dyg's bomberman (TS portf.)</title>
   </head>
   <body class="unstarted">
-    <h1>DYG'S&nbsp;BOMBERMAN</h1>
+    <h1 class="title">DYG'S&nbsp;BOMBERMAN</h1>
     <div id="app">
       <div id="sprites"></div>
     </div>
@@ -18,7 +18,21 @@
       <button>S-<span>down</span></button>
       <button>D-<span>right</span></button>
       <button>Z-<span>bomb</span></button>
+      <button>KILLS: <span id="killcount">O</span></button>
     </div>
+    <div id="end-screen">
+      <img src="" id="img" alt="">
+      <div>
+        <h1 id="result"></h1>
+        <h2>SCORE: <span id="score"></span></h2>
+        <h2>TIME: <span id="time"></span></h2>
+        <h2>POWER-UP: <span id="powered"></span></h2>
+      </div>
+    </div>
+    <h2 id="dk" class="off comm">double kill</h2>
+    <h2 id="tk" class="off comm">TRIPLE kill</h2>
+    <h2 id="qk" class="off comm">QUADRUPLE KILL??</h2>
+    <h2 id="ik" class="off comm">!!INSANE!!</h2>
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

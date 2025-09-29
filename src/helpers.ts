@@ -1,5 +1,8 @@
 export class Helper {
-  public size = 54;
+  public query = document.querySelector.bind(document)
+  public id = document.getElementById.bind(document)
+  public size = 40;
+  public busy: string = '';
   constructor() {}
   newTile(
     id: string,
@@ -42,23 +45,21 @@ export class Helper {
   getNRandomFreePositions(
     amount: number,
     width: number,
-    height: number,
-    gameBoard: number[][]
+    height: number
   ) {
     let count = amount;
     let pos: number[][] = [];
-    let busy: string = '';
     while (count >= 0) {
       const x: number = Math.floor(Math.random() * (width - 1));
       const y: number = Math.floor(Math.random() * (height - 1));
       
-      if ((y !== 0 ||
-        y !== height - 1 ||
-        x !== 0 ||
-        x !== width - 1 ||
-        (y % 2 !== 0 && x % 2 !== 0)) && x + y > 3 && !busy.includes(`${x},${y};`)) {
+      if ((y !== 0 &&
+        y !== height - 1 &&
+        x !== 0 &&
+        x !== width - 1 &&
+        (y % 2 !== 0 || x % 2 !== 0)) && x + y > 3 && !this.busy.includes(`${x},${y};`)) {
         pos.push([x, y]);
-        busy += `${x},${y};`;
+        this.busy += `${x},${y};`;
         count--;
       }
     }

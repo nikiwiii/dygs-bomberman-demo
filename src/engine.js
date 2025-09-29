@@ -25,7 +25,7 @@ export class Anim {
                 rb: [(pos[0] + 1) * (dsplySize / 2), (pos[1] + 1) * (dsplySize / 2)],
             };
         }
-        else if (this.destId[0] === 'b' && this.destId.length == 7) {
+        else if (this.destId[0] === 'b' && this.destId[1] === 'a') {
             this.currDir = Math.random() >= 0.5 ? 'right' : 'left';
             this.el.className = 'baloon';
         }
