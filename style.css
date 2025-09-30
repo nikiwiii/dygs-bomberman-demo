@@ -87,7 +87,7 @@ body {
 .title {
   font-family: bomberFont;
   position: absolute;
-  font-size: calc(var(--size) * 1.5);
+  font-size: 5vw;
   top: 95px;
   left: 50%;
   letter-spacing: 2px;
@@ -96,8 +96,9 @@ body {
   text-shadow: 5px 5px 0px green;
 }
 .controls {
-  width: fit-content;
-  background-color: black;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
   padding: 4px;
   display: flex;
   transform: translate(-50%, 0);

@@ -11,6 +11,7 @@ export class Anim {
         this.pos = pos;
         this.currDir = currDir;
         this.moving = moving;
+        this.skin = Math.floor(Math.random() * 6); //tylko dla oponenta
         //json
         this.frames = ob.frames; // tablica z klatkami
         this.times = ob.times; // tablica z czasami wyświetleń klatki
@@ -45,7 +46,7 @@ export class Anim {
             let ctx = this.el.getContext('2d');
             ctx.reset();
             this.currMove = this.frames[dir];
-            ctx.drawImage(this.img, this.currMove[i].x0, this.currMove[i].y0, canSize, canSize, 0, 0, canSize, canSize);
+            ctx.drawImage(this.img, this.currMove[i].x0, this.currMove[i].y0 + (this.el.className === 'baloon' ? this.skin * 16 : 0), canSize, canSize, 0, 0, canSize, canSize);
         }
     }
     goTo(x, y) {
