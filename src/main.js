@@ -40,26 +40,30 @@ let img;
 const nodes = ["0,9", "0,10", "0,11"];
 let frameInterval = 0;
 const modes = [
-    { width: 21, height: 9, opp: 10 },
+    { width: 21, height: 9, opp: 1 },
     { width: 21, height: 11, opp: 20 },
     { width: 21, height: 21, opp: 50 },
 ];
 let currMode = 0;
 let currKills = 0;
+const velocity = dsplySize / 8;
 window.onload = () => {
     activateControls();
     initGame();
 };
 const initGame = () => {
-    var _a;
+    help.id("starter").innerHTML = "START";
+    help.id("controls").style.opacity = "100%";
     help.id("end-screen").style.top = "-100%";
     time = 0;
     score = 0;
+    help.id("score").innerHTML = `0`;
+    help.id("time").innerHTML = `0s`;
     powered = false;
     started = false;
     isDead = false;
     const colors = ["green", "#5c8000", "#806400"];
-    (_a = help.query("body")) === null || _a === void 0 ? void 0 : _a.classList.add("unstarted");
+    help.query("body").classList.add("unstarted");
     document.documentElement.style.setProperty('--size', help.size + "px");
     document.documentElement.style.setProperty('--gbwidth', modes[currMode].width.toString());
     document.documentElement.style.setProperty('--gbheight', modes[currMode].height.toString());
@@ -83,9 +87,11 @@ const initGame = () => {
             help.id(e).onclick = () => modeChoice(i);
             i === currMode ? help.id(e).classList.add("active") : null;
         });
+        help.id("wasd").addEventListener("click", () => mobileControls());
         clearTimeout(frameInterval);
         clearInterval(baloonMover);
         clearInterval(moveInterval);
+        clearInterval(timeCounter);
         spawnSprites();
         help.id("starter").addEventListener("click", start);
     };
@@ -130,9 +136,10 @@ const spawnSprites = () => {
     anim();
 };
 const start = () => {
-    var _a;
     if (!started) {
-        (_a = help.query("body")) === null || _a === void 0 ? void 0 : _a.classList.remove("unstarted");
+        help.id("starter").innerHTML = "RESTART";
+        help.query("body").classList.remove("unstarted");
+        help.id("controls").style.opacity = "50%";
         baloonMover = setInterval(() => {
             allSprites.baloons.forEach((e) => {
                 ActivateBaloon(e, e.pos);
@@ -140,7 +147,10 @@ const start = () => {
         }, 1000);
         moveInterval = setInterval(allatPlayerMoveShi, 50);
         started = true;
-        timeCounter = setInterval(() => time++, 1000);
+        timeCounter = setInterval(() => {
+            time++;
+            help.id("time").innerHTML = `${time.toString()}s`;
+        }, 1000);
         anim();
         // help.id("test")!.style.transform = `translate(calc(50% - ${help.size}px - ${allSprites.player.el.style.left}), - ${allSprites.player.el.style.top})`
     }
@@ -233,7 +243,7 @@ const handleBinds = (e) => {
     }
     else if (prKey == 90) {
         //z
-        if (!exploding && !allSprites.bomb.moving && !isDead) {
+        if (!exploding && !allSprites.bomb.moving && !isDead && started) {
             explode(allSprites.player.pos[0], allSprites.player.pos[1]);
         }
     }
@@ -241,7 +251,6 @@ const handleBinds = (e) => {
 const allatPlayerMoveShi = () => {
     if (movePlayer && started && !isDead) {
         let xyMove = [0, 0];
-        const velocity = Math.round(dsplySize / 9);
         let directions = ['left', 'up', 'right', 'down'];
         const hb = allSprites.player.hitbox;
         controller.forEach((key) => {
@@ -291,7 +300,7 @@ const allatPlayerMoveShi = () => {
         if (powUpPose[0] === allSprites.player.pos[0] &&
             powUpPose[1] === allSprites.player.pos[1]) {
             help.id('power').style.display = 'none';
-            help.id('player').style.filter = 'hue-rotate(163deg) drop-shadow(0px 0px 20px orange)';
+            help.id('player').style.filter = 'hue-rotate(163deg) drop-shadow(2px 2px 1px black)';
             help.id('player').style.animation = 'power infinite 1s ease-in-out';
             powUpPose = [0, 0];
             powered = true;
@@ -389,6 +398,7 @@ const killBaloon = (e) => __awaiter(void 0, void 0, void 0, function* () {
     e.repeat = false;
     help.query('#killcount').innerHTML = `${modes[currMode].opp - baloonCount}/${modes[currMode].opp}`;
     score += currKills * 50;
+    help.id("score").innerHTML = score.toString();
     if (baloonCount == 0)
         endGame();
     switch (currKills) {
@@ -408,28 +418,78 @@ const killBaloon = (e) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const comment = (what) => {
-    console.log(help.id(what).classList);
+    switch (what) {
+        case "tk":
+            hideCom("dk");
+            break;
+        case "qk":
+            hideCom("tk");
+            break;
+        case "ik":
+            hideCom("qk");
+            break;
+        default:
+            break;
+    }
     help.id(what).classList.remove("off");
     help.id(what).style.top = "37vh";
     help.id(what).style.left = "50%";
-    setTimeout(() => {
-        help.id(what).classList.add("off");
-        help.id(what).style.top = "0";
-    }, 2000);
+    setTimeout(() => hideCom(what), 2000);
+};
+const hideCom = (w) => {
+    help.id(w).classList.add("off");
+    help.id(w).style.top = "0";
 };
 const endGame = () => {
     help.id("end-screen").style.top = "50%";
     clearInterval(timeCounter);
     if (!isDead) {
+        playerLeave();
         help.query("#img").src = "img/bombergif.gif";
+        help.id("end-screen").style.border = "3px solid aqua";
         help.id("result").innerHTML = "congrats";
     }
     else {
         help.query("#img").src = "img/baloongif.gif";
         help.id("result").innerHTML = "get good";
     }
-    help.id("time").innerHTML = `${time.toString()}s`;
-    help.id("score").innerHTML = score.toString();
+    help.id("time2").innerHTML = `${time.toString()}s`;
+    help.id("score2").innerHTML = score.toString();
     help.id("powered").innerHTML = powered ? "yes" : "no";
     // help.id("test")!.style.filter = "brightness(50%)"
+};
+const playerLeave = () => {
+    clearInterval(moveInterval);
+    allSprites.player.currDir = "happyassguy";
+    allSprites.player.actFrame = 0;
+    allSprites.player.moving = true;
+    body.appendChild(help.newTile("door", "sprite door", elements.doorUrl, allSprites.player.pos[0], allSprites.player.pos[1], dsplySize));
+};
+const mobileControls = () => {
+    help.id("mobile-controls").style.display = "flex";
+    help.id("w").addEventListener("mousedown", () => mobileKeyDown(87));
+    help.id("w").addEventListener("mouseup", () => mobileKeyUp(87));
+    help.id("a").addEventListener("mousedown", () => mobileKeyDown(65));
+    help.id("a").addEventListener("mouseup", () => mobileKeyUp(65));
+    help.id("s").addEventListener("mousedown", () => mobileKeyDown(83));
+    help.id("s").addEventListener("mouseup", () => mobileKeyUp(83));
+    help.id("d").addEventListener("mousedown", () => mobileKeyDown(68));
+    help.id("d").addEventListener("mouseup", () => mobileKeyUp(68));
+    help.id("z").addEventListener("mousedown", () => {
+        if (!exploding && !allSprites.bomb.moving && !isDead && started) {
+            explode(allSprites.player.pos[0], allSprites.player.pos[1]);
+        }
+    });
+};
+const mobileKeyDown = (k) => {
+    controller.includes(k) ? null : controller.push(k);
+    currKey = k;
+    movePlayer = true;
+};
+const mobileKeyUp = (k) => {
+    controller.splice(controller.indexOf(k), 1);
+    if (controller.length == 0) {
+        movePlayer = false;
+    }
+    allSprites.player.moving = false;
 };

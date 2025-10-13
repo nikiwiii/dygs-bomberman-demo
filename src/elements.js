@@ -15,6 +15,9 @@ export class Elements {
             ctx.reset();
             ctx.drawImage(img, 16, 224, 16, 16, 0, 0, 16, 16);
             this.powerUrl = canvas.toDataURL();
+            ctx.reset();
+            ctx.drawImage(img, 176, 48, 16, 16, 0, 0, 16, 16);
+            this.doorUrl = canvas.toDataURL();
         };
     }
 }
