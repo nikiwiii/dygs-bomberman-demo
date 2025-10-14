@@ -46,7 +46,7 @@ let img: CanvasImageSource
 const nodes = ["0,9","0,10","0,11"]
 let frameInterval = 0
 const modes = [
-  {width: 21, height: 9, opp: 1},
+  {width: 21, height: 9, opp: 10},
   {width: 21, height: 11, opp: 20},
   {width: 21, height: 21, opp: 50},
 ]
