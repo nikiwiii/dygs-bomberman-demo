@@ -47,7 +47,9 @@ const modes = [
 let currMode = 0;
 let currKills = 0;
 const velocity = dsplySize / 8;
+let mobileOn = false;
 window.onload = () => {
+    window.addEventListener("contextmenu", e => e.preventDefault());
     activateControls();
     initGame();
 };
@@ -243,10 +245,13 @@ const handleBinds = (e) => {
     }
     else if (prKey == 90) {
         //z
-        if (!exploding && !allSprites.bomb.moving && !isDead && started) {
-            explode(allSprites.player.pos[0], allSprites.player.pos[1]);
-        }
+        bombBind();
     }
+};
+const bombBind = () => {
+    // if (!isDead && started) { TO DO
+    if (!exploding && !allSprites.bomb.moving && !isDead && started)
+        explode(allSprites.player.pos[0], allSprites.player.pos[1]);
 };
 const allatPlayerMoveShi = () => {
     if (movePlayer && started && !isDead) {
@@ -451,6 +456,7 @@ const endGame = () => {
     }
     else {
         help.query("#img").src = "img/baloongif.gif";
+        help.id("end-screen").style.border = "3px solid red";
         help.id("result").innerHTML = "get good";
     }
     help.id("time2").innerHTML = `${time.toString()}s`;
@@ -466,20 +472,21 @@ const playerLeave = () => {
     body.appendChild(help.newTile("door", "sprite door", elements.doorUrl, allSprites.player.pos[0], allSprites.player.pos[1], dsplySize));
 };
 const mobileControls = () => {
-    help.id("mobile-controls").style.display = "flex";
-    help.id("w").addEventListener("mousedown", () => mobileKeyDown(87));
-    help.id("w").addEventListener("mouseup", () => mobileKeyUp(87));
-    help.id("a").addEventListener("mousedown", () => mobileKeyDown(65));
-    help.id("a").addEventListener("mouseup", () => mobileKeyUp(65));
-    help.id("s").addEventListener("mousedown", () => mobileKeyDown(83));
-    help.id("s").addEventListener("mouseup", () => mobileKeyUp(83));
-    help.id("d").addEventListener("mousedown", () => mobileKeyDown(68));
-    help.id("d").addEventListener("mouseup", () => mobileKeyUp(68));
-    help.id("z").addEventListener("mousedown", () => {
-        if (!exploding && !allSprites.bomb.moving && !isDead && started) {
-            explode(allSprites.player.pos[0], allSprites.player.pos[1]);
-        }
-    });
+    if (!mobileOn) {
+        help.id("mobile-controls").style.display = "flex";
+        help.id("w").addEventListener("touchstart", () => mobileKeyDown(87));
+        help.id("w").addEventListener("touchend", () => mobileKeyUp(87));
+        help.id("a").addEventListener("touchstart", () => mobileKeyDown(65));
+        help.id("a").addEventListener("touchend", () => mobileKeyUp(65));
+        help.id("s").addEventListener("touchstart", () => mobileKeyDown(83));
+        help.id("s").addEventListener("touchend", () => mobileKeyUp(83));
+        help.id("d").addEventListener("touchstart", () => mobileKeyDown(68));
+        help.id("d").addEventListener("touchend", () => mobileKeyUp(68));
+        help.id("z").addEventListener("touchstart", bombBind);
+    }
+    else
+        help.id("mobile-controls").style.display = "none";
+    mobileOn = !mobileOn;
 };
 const mobileKeyDown = (k) => {
     controller.includes(k) ? null : controller.push(k);
