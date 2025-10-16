@@ -7,17 +7,19 @@
     <title>dyg's bomberman (TS portf.)</title>
   </head>
   <body class="unstarted">
-    <h1 class="title">DYG'S&nbsp;BOMBERMAN</h1>
+    <h1 class="title"><span class="title1">DYG'S&nbsp;</span><span class="title2">BOMBERMAN</span>
+      <div class="controls" id="controls">
+        <button id="starter">START</button>
+        <button id="wasd"><p>W</p><p>ASD</p></button>
+        <button disabled>Z<span class="help">-bomb</span></button>
+        <button disabled>KILLS: <span id="killcount">O</span></button>
+        <button disabled>SCORE: <span id="score">O</span></button>
+        <button disabled>TIME: <span id="time">Os</span></button>
+      </div>
+    </h1>
     <div id="app">
+      <div id="test"></div>
       <div id="sprites"></div>
-    </div>
-    <div class="controls" id="controls">
-      <button id="starter">START</button>
-      <button id="wasd"><p>W</p><p>ASD</p></button>
-      <button disabled>Z<span class="help">-bomb</span></button>
-      <button disabled>KILLS: <span id="killcount">O</span></button>
-      <button disabled>SCORE: <span id="score">O</span></button>
-      <button disabled>TIME: <span id="time">Os</span></button>
     </div>
     <div id="end-screen">
       <img src="" id="img" alt="">

@@ -48,10 +48,26 @@ let currMode = 0;
 let currKills = 0;
 const velocity = dsplySize / 8;
 let mobileOn = false;
+let bombUp = 0;
 window.onload = () => {
     window.addEventListener("contextmenu", e => e.preventDefault());
     activateControls();
     initGame();
+    setupStyles();
+};
+const setupStyles = () => {
+    help.id("app").style.transform = "scale(1) translateY(calc(var(--size) * var(--gbheight) / 2 * -1))";
+    help.id("app").style.opacity = "1";
+    help.query(".title1").style.color = "aqua";
+    help.query(".title2").style.color = "orange";
+    help.query(".title1").style.background = "url(/img/intro.gif)";
+    help.query(".title2").style.background = "url(/img/intro.gif)";
+    setTimeout(() => {
+        help.query(".title1").style.background = "transparent";
+        help.query(".title2").style.background = "transparent";
+        help.query(".title1").style.textShadow = "5px 5px 0px teal";
+        help.query(".title2").style.textShadow = "5px 5px 0px darkred";
+    }, 1000);
 };
 const initGame = () => {
     help.id("starter").innerHTML = "START";
@@ -72,7 +88,8 @@ const initGame = () => {
     document.documentElement.style.setProperty('--mode', colors[currMode]);
     baloonCount = modes[currMode].opp;
     help.query('#killcount').innerHTML = `0/${modes[currMode].opp}`;
-    help.query('#app').innerHTML = `<div id="test"></div>`;
+    help.query('#test').innerHTML = ``;
+    help.query('#sprites').innerHTML = ``;
     body = help.query('#test');
     data = frameData;
     img = new Image();
@@ -117,11 +134,11 @@ const spawnSprites = () => {
         baloons: imgs,
         bomb: new Anim(img, data.bomb, 'bomb', [0, 0], 'right', false),
         flames: [
-            new Anim(img, data.explosion, `explosion1`, [0, 0], 'left', false),
-            new Anim(img, data.explosion, `explosion2`, [0, 0], 'top', false),
-            new Anim(img, data.explosion, `explosion3`, [0, 0], 'right', false),
-            new Anim(img, data.explosion, `explosion4`, [0, 0], 'down', false),
-            new Anim(img, data.explosion, `explosion5`, [0, 0], 'middle', false),
+            new Anim(img, data.explosion, `explosion1`, [0, 0], 'middle', false),
+            new Anim(img, data.explosion, `explosion2`, [0, 0], 'left', false),
+            new Anim(img, data.explosion, `explosion3`, [0, 0], 'top', false),
+            new Anim(img, data.explosion, `explosion4`, [0, 0], 'right', false),
+            new Anim(img, data.explosion, `explosion5`, [0, 0], 'down', false),
             new Anim(img, data.explosion, `explosion6`, [0, 0], 'midleft', false),
             new Anim(img, data.explosion, `explosion7`, [0, 0], 'midtop', false),
             new Anim(img, data.explosion, `explosion8`, [0, 0], 'midright', false),
@@ -309,6 +326,7 @@ const allatPlayerMoveShi = () => {
             help.id('player').style.animation = 'power infinite 1s ease-in-out';
             powUpPose = [0, 0];
             powered = true;
+            bombUp++;
         }
     }
 };
@@ -321,9 +339,8 @@ const ActivateBaloon = (baloon, pos) => {
     };
     baloon.moveBaloon(obj);
     if (baloon.pos[0] === allSprites.player.pos[0] &&
-        baloon.pos[1] === allSprites.player.pos[1]) {
+        baloon.pos[1] === allSprites.player.pos[1])
         killPlayer();
-    }
 };
 const explode = (x, y) => __awaiter(void 0, void 0, void 0, function* () {
     currKills = 0;
@@ -331,23 +348,17 @@ const explode = (x, y) => __awaiter(void 0, void 0, void 0, function* () {
     allSprites.bomb.goTo(x, y);
     gameBoard[y][x] = 6;
     yield new Promise((e) => setTimeout(e, 2500));
-    console.log(gameBoard[y][x]);
-    tileExplosion(x, y, 4);
-    if (powered) {
-        if (tileExplosion(x - 1, y, 5))
-            tileExplosion(x - 2, y, 0);
-        if (tileExplosion(x, y - 1, 6))
-            tileExplosion(x, y - 2, 1);
-        if (tileExplosion(x + 1, y, 7))
-            tileExplosion(x + 2, y, 2);
-        if (tileExplosion(x, y + 1, 8))
-            tileExplosion(x, y + 2, 3);
-    }
-    else {
-        tileExplosion(x - 1, y, 0);
-        tileExplosion(x, y - 1, 1);
-        tileExplosion(x + 1, y, 2);
-        tileExplosion(x, y + 1, 3);
+    tileExplosion(x, y, 0);
+    let bombSurround = [[x, y], [x, y], [x, y], [x, y]];
+    for (let i = 0; i <= bombUp; i++) {
+        let fireType = 5;
+        const addRange = [[-(i + 1), 0], [0, -(i + 1)], [i + 1, 0], [0, i + 1]];
+        if (i == bombUp)
+            fireType = 1;
+        bombSurround.forEach((e, j) => {
+            if (bombSurround[j].length)
+                tileExplosion(e[0] + addRange[j][0], e[1] + addRange[j][1], j + fireType) ? null : bombSurround[j] = [];
+        });
     }
     clearFlames();
     exploding = true;
@@ -364,14 +375,9 @@ const tileExplosion = (x, y, i) => {
         allSprites.flames[i].goTo(x, y);
         flamePoses.push([x, y]);
         allSprites.flames[i].moving = true;
-        if (allSprites.player.pos[0] == x && allSprites.player.pos[1] == y) {
+        if (allSprites.player.pos[0] == x && allSprites.player.pos[1] == y)
             killPlayer();
-        }
-        allSprites.baloons.forEach((e) => {
-            if (e.pos[0] == x && e.pos[1] == y) {
-                killBaloon(e);
-            }
-        });
+        allSprites.baloons.forEach((e) => e.pos[0] == x && e.pos[1] == y ? killBaloon(e) : null);
         gameBoard[y][x] = 5;
     }
     return gameBoard[y][x] !== 3;
