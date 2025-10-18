@@ -156,11 +156,10 @@ export class Anim {
       this.el.style.backgroundImage = 'none';
       this.moving = false;
       this.actFrame = 0;
-      this.goTo(0, 0);
-      this.el.className === 'baloon' ? this.vanish() : null;
+      this.vanish()
     }
   }
   vanish() {
-    this.el.style.display = 'none';
+    this.el.remove()
   }
 }

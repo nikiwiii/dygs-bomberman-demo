@@ -279,17 +279,6 @@ h1 {
   height: fit-content;
 }
 
-@keyframes power {
-  0% {
-    opacity: .9;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: .9;
-  }
-}
 @keyframes wobble-tk {
   0% {
     transform: translate(-50%, 0);
