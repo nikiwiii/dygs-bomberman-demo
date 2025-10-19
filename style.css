@@ -11,6 +11,7 @@
   --gbwidth: 0;
   --gbheight: 0;
   --mode: green;
+  --filter: ;
 }
 * {
   margin: 0;
@@ -96,16 +97,20 @@ body {
 } */
 .stone {
   z-index: 100;
-  filter: drop-shadow(2px 2px 1px black);
+  filter: drop-shadow(2px 2px 1px black) var(--filter);
   background-size: cover;
 }
+.brick {
+  filter: drop-shadow(2px 2px 1px black) var(--filter);
+}
 .title1, .title2 {
-  transition: color 1s ease-in-out, text-shadow 1s ease-in-out;
+  transition: color 1s ease-in-out, text-shadow 1s ease-in-out, opacity .3s ease-in-out;
   color: black; 
   background-size: contain !important;
   text-shadow: none;
 }
 .title {
+  z-index: 1000;
   font-family: bomberFont;
   position: absolute;
   font-size: 5vw;
@@ -115,7 +120,6 @@ body {
   transform: translateX(-50%);
 }
 .controls {
-  z-index: 1000;
   position: absolute;
   width: 100%;
   flex-wrap: wrap;
@@ -126,7 +130,7 @@ body {
 }
 .controls button {
   border-top: 3px solid gray;
-  background-color: rgb(39, 39, 39);
+  background: transparent;
   color: white;
   font-family: bomberFont;
   font-size: calc(var(--size) / 2);
@@ -134,7 +138,7 @@ body {
 }
 .controls button:first-of-type, .controls button:nth-of-type(2) {
   border-top: 3px solid aqua;
-  background-color: teal;
+  background: teal;
 }
 .unstarted canvas {
   filter: sepia(1) hue-rotate(120deg);
@@ -144,6 +148,19 @@ body {
   color:aqua;
   font-family: nrFont;
   letter-spacing: -3px;
+}
+#lvlbtn {
+  display: flex;
+  align-items: center;
+}
+#lvl {
+  font-family: nrfont;
+  background-size: cover;
+  width: max-content;
+}
+img {
+  width: var(--size);
+  height: var(--size);
 }
 #end-screen {
   position: absolute;
@@ -279,6 +296,23 @@ h1 {
   height: fit-content;
 }
 
+.powup {
+  animation: powup 2s infinite ease-in-out;
+  transform: translate(0,-10%) scale(.7);
+}
+
+@keyframes powup {
+  0% {
+  transform: translate(0,-10%) scale(.7);
+  }
+  50% {
+  transform: translate(0,10%) scale(.7);
+  }
+  100% {
+  transform: translate(0,-10%) scale(.7);
+  }
+}
+
 @keyframes wobble-tk {
   0% {
     transform: translate(-50%, 0);
@@ -310,5 +344,25 @@ h1 {
   }
   100% {
     transform: translate(-50%, 0);
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .title1, .title2 {
+    width: min-content;
+  }
+  .title {
+    padding: 10px;
+    top: 0;
+    left: 0;
+    transform: translate(0,0);
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+  }
+  .controls {
+    position: static;
+    display: flex;
+    justify-content: start;
   }
 }

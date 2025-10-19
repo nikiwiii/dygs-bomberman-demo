@@ -65,4 +65,38 @@ export class Helper {
     }
     return pos;
   }
+  setupPrettyStuff(currMode:number, modes: { opp:number; width:number; height:number }[]) {
+    const colors = ["green", "#5c8000", "#806400"]
+    const filters = ["", "sepia(.5)", "sepia(.5) hue-rotate(320deg) brightness(0.7) saturate(2.5)"]
+    
+    this.query<HTMLElement>(".title1")!.style.opacity = "1"
+    this.query<HTMLElement>(".title2")!.style.opacity = "1"
+    this.id("starter")!.innerHTML = "START"
+    this.id("controls")!.style.opacity = "100%"
+    this.id("end-screen")!.style.top = "-100%";
+    this.id("score")!.innerHTML = `0`
+    this.id("time")!.innerHTML = `0s`
+    this.query("body")!.classList.add("unstarted")
+    document.documentElement.style.setProperty('--size', this.size + "px");
+    document.documentElement.style.setProperty('--gbwidth', modes[currMode].width.toString());
+    document.documentElement.style.setProperty('--gbheight', modes[currMode].height.toString());
+    document.documentElement.style.setProperty('--mode', colors[currMode]);
+    document.documentElement.style.setProperty('--filter', filters[currMode]);
+    this.query('#killcount')!.innerHTML = `0/${modes[currMode].opp}`;
+    this.query('#test')!.innerHTML = ``;
+    this.query('#sprites')!.innerHTML = ``;
+    this.id("app")!.style.transform = "scale(1) translateY(calc(var(--size) * 10 / 2 * -1))"
+    this.id("app")!.style.opacity = "1"
+    this.id("test")!.style.transform = `translate(0,0)`
+    this.query<HTMLElement>(".title1")!.style.color = "aqua"
+    this.query<HTMLElement>(".title2")!.style.color = "orange"
+    this.query<HTMLElement>(".title1")!.style.background = "url(/img/intro.gif)"
+    this.query<HTMLElement>(".title2")!.style.background = "url(/img/intro.gif)"
+    setTimeout(() => {
+      this.query<HTMLElement>(".title1")!.style.background = "transparent"
+      this.query<HTMLElement>(".title2")!.style.background = "transparent"
+      this.query<HTMLElement>(".title1")!.style.textShadow = "5px 5px 0px teal"
+      this.query<HTMLElement>(".title2")!.style.textShadow = "5px 5px 0px darkred"
+    }, 1000);
+  }
 }

@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { Elements } from './elements.js';
-import { Anim } from './engine.js';
+import { Anim, AnimBaloon, AnimPlayer } from './engine.js';
 import { Helper } from './helpers.js';
 // @ts-ignore
 import frameData from './data.json' with { type: "json" };
@@ -53,42 +53,16 @@ window.onload = () => {
     window.addEventListener("contextmenu", e => e.preventDefault());
     activateControls();
     initGame();
-    setupStyles();
-};
-const setupStyles = () => {
-    help.id("app").style.transform = "scale(1) translateY(calc(var(--size) * 10 / 2 * -1))";
-    help.id("app").style.opacity = "1";
-    help.query(".title1").style.color = "aqua";
-    help.query(".title2").style.color = "orange";
-    help.query(".title1").style.background = "url(/img/intro.gif)";
-    help.query(".title2").style.background = "url(/img/intro.gif)";
-    setTimeout(() => {
-        help.query(".title1").style.background = "transparent";
-        help.query(".title2").style.background = "transparent";
-        help.query(".title1").style.textShadow = "5px 5px 0px teal";
-        help.query(".title2").style.textShadow = "5px 5px 0px darkred";
-    }, 1000);
 };
 const initGame = () => {
-    help.id("starter").innerHTML = "START";
-    help.id("controls").style.opacity = "100%";
-    help.id("end-screen").style.top = "-100%";
+    help.setupPrettyStuff(currMode, modes);
     time = 0;
     score = 0;
-    help.id("score").innerHTML = `0`;
-    help.id("time").innerHTML = `0s`;
+    powUpPoses = [];
     started = false;
     isDead = false;
-    const colors = ["green", "#5c8000", "#806400"];
-    help.query("body").classList.add("unstarted");
-    document.documentElement.style.setProperty('--size', help.size + "px");
-    document.documentElement.style.setProperty('--gbwidth', modes[currMode].width.toString());
-    document.documentElement.style.setProperty('--gbheight', modes[currMode].height.toString());
-    document.documentElement.style.setProperty('--mode', colors[currMode]);
+    bombUp = 0;
     baloonCount = modes[currMode].opp;
-    help.query('#killcount').innerHTML = `0/${modes[currMode].opp}`;
-    help.query('#test').innerHTML = ``;
-    help.query('#sprites').innerHTML = ``;
     body = help.query('#test');
     data = frameData;
     img = new Image();
@@ -124,8 +98,8 @@ const spawnSprites = () => {
     const baloonPoses = help.getNRandomFreePositions(baloonCount, modes[currMode].width, modes[currMode].height);
     let imgs = [];
     for (let i = 0; i < baloonCount; i++)
-        imgs.push(new Anim(img, data.baloon, `baloon${i}`, baloonPoses[i], 'right', true));
-    const player = new Anim(img, data.player, 'player', [1, 1], 'right', true);
+        imgs.push(new AnimBaloon(img, data.baloon, `baloon${i}`, baloonPoses[i], 'right'));
+    const player = new AnimPlayer(img, data.player, [1, 1], 'right');
     player.renderFrame(0, 'down');
     player.moving = false;
     allSprites = {
@@ -146,6 +120,8 @@ const start = () => {
         baloonMover = setInterval(() => allSprites.baloons.forEach((e) => ActivateBaloon(e, e.pos)), 1000);
         moveInterval = setInterval(allatPlayerMoveShi, 50);
         started = true;
+        help.query(".title1").style.opacity = "0";
+        help.query(".title2").style.opacity = "0";
         timeCounter = setInterval(() => {
             time++;
             help.id("time").innerHTML = `${time.toString()}s`;
@@ -200,14 +176,14 @@ const createGameBoard = (w, h) => {
 };
 const placeBricks = (n) => {
     brickPoses = help.getNRandomFreePositions(n, modes[currMode].width, modes[currMode].height);
-    for (let i = 0; i < Math.floor(brickPoses.length / 2); i++)
+    for (let i = 0; i < Math.floor(brickPoses.length / 4); i++)
         powUpPoses.push(brickPoses[Math.floor(Math.random() * n)]);
     powUpPoses.forEach((p, i) => {
-        const power = help.newTile(`power${i}`, 'sprite', elements.powerUrl, p[0], p[1], dsplySize);
+        const power = help.newTile(`power${i}`, 'sprite powup', elements.powerUrl, p[0], p[1], dsplySize);
         body.appendChild(power);
     });
     brickPoses.forEach((e) => {
-        const brick = help.newTile(`brick${e[1]},${e[0]}`, 'sprite', elements.brickUrl, e[0], e[1], dsplySize);
+        const brick = help.newTile(`brick${e[1]},${e[0]}`, 'sprite brick', elements.brickUrl, e[0], e[1], dsplySize);
         gameBoard[e[1]][e[0]] = 4;
         body.appendChild(brick);
     });
@@ -292,7 +268,9 @@ const allatPlayerMoveShi = () => {
                 help.id(`power${i}`).style.display = 'none';
                 powUpPoses[i] = [0, 0];
                 bombUp++;
-                console.log(bombUp);
+                help.id("lvl").innerHTML = `${bombUp + 1}`;
+                help.id("upgrade").src = "";
+                help.id("upgrade").src = "/img/arrgif.gif";
             }
         });
     }

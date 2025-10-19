@@ -6,18 +6,17 @@ const canSize = 16;
 export class Anim {
   private img: CanvasImageSource;
   private tickNumber: number;
-  actFrame: number;
   private destId: string;
   private frames: object[];
   private times: number[];
-  repeat: boolean;
-  pos: number[];
-  currDir: string;
-  moving: boolean;
-  hitbox?: object;
+  public actFrame: number;
+  public repeat: boolean;
+  public pos: number[];
+  public currDir: string;
+  public moving: boolean;
   private currMove;
-  private skin: number
   public el;
+  protected skin = 0;
   constructor(
     img: CanvasImageSource,
     ob: { frames: any; times: any; repeat: any },
@@ -33,8 +32,6 @@ export class Anim {
     this.pos = pos;
     this.currDir = currDir;
     this.moving = moving;
-    this.skin = Math.floor(Math.random() * 6) //tylko dla oponenta
-    //json
     this.frames = ob.frames; // tablica z klatkami
     this.times = ob.times; // tablica z czasami wyświetleń klatki
     this.repeat = ob.repeat; // czy animacja ma się powtarzać
@@ -42,17 +39,6 @@ export class Anim {
     this.el = document.createElement('canvas');
     this.el.width = canSize;
     this.el.height = canSize;
-    if (this.destId === 'player') {
-      this.hitbox = {
-        lt: [pos[0] * (dsplySize / 2), pos[1] * (dsplySize / 2)],
-        rt: [(pos[0] + 1) * (dsplySize / 2), pos[1] * (dsplySize / 2)],
-        lb: [pos[0] * (dsplySize / 2), (pos[1] + 1) * (dsplySize / 2)],
-        rb: [(pos[0] + 1) * (dsplySize / 2), (pos[1] + 1) * (dsplySize / 2)],
-      };
-    } else if (this.destId[0] === 'b' && this.destId[1] === 'a') {
-      this.currDir = Math.random() >= 0.5 ? 'right' : 'left';
-      this.el.className = 'baloon';
-    }
     this.el.id = this.destId;
     this.el.className = !this.el.className
       ? this.destId[0] === 'e'
@@ -72,7 +58,7 @@ export class Anim {
       ctx.drawImage(
         this.img,
         this.currMove[i].x0,
-        this.currMove[i].y0 + (this.el.className === 'baloon' ? this.skin * 16 : 0),
+        this.currMove[i].y0 + this.skin * 16,
         canSize,
         canSize,
         0,
@@ -96,52 +82,6 @@ export class Anim {
     this.pos = [x, y];
   }
 
-  movePlayer(dir: string, xyMove: number[]) {
-    let left = parseInt(
-      this.el.style.left.substring(0, this.el.style.left.length - 2)
-    );
-    let top = parseInt(
-      this.el.style.top.substring(0, this.el.style.top.length - 2)
-    );
-    left = left + xyMove[0];
-    top = top + xyMove[1];
-    this.el.style.left = left + 'px';
-    this.el.style.top = top + 'px';
-    helper.id("test")!.style.transform = `translate(calc(50% - ${helper.size}px - ${left}px),${-top}px)`
-
-    dir !== 'stay' ? (this.currDir = dir) : null;
-    this.pos = [
-      Math.round((left + 14) / dsplySize),
-      Math.round((top + 14) / dsplySize),
-    ];
-    this.hitbox = {
-      lt: [left, top],
-      rt: [left + dsplySize / 2, top],
-      lb: [left, top + dsplySize / 1.3],
-      rb: [left + dsplySize / 2, top + dsplySize / 1.3],
-    };
-  }
-
-  moveBaloon(obj: object) {
-    if (this.repeat) {
-      const dirs = ['left', 'up', 'right', 'down'];
-      if (obj[this.currDir]) {
-        this.goTo(
-          this.pos[0] +
-            (this.currDir === 'left' ? -1 : this.currDir === 'right' ? 1 : 0),
-          this.pos[1] +
-            (this.currDir === 'up' ? -1 : this.currDir === 'down' ? 1 : 0)
-        );
-      } else {
-        this.currDir = dirs[Math.round(Math.random() * 3)];
-        return;
-      }
-      if (Math.random() >= 0.8) {
-        this.currDir = dirs[Math.round(Math.random() * 3)];
-      }
-    }
-  }
-
   goAnim() {
     this.renderFrame(this.actFrame, this.currDir);
     this.tickNumber++;
@@ -161,5 +101,66 @@ export class Anim {
   }
   vanish() {
     this.el.remove()
+  }
+}
+
+export class AnimBaloon extends Anim {
+  constructor(img: CanvasImageSource, ob: { frames: any; times: any; repeat: any }, id: string, pos: number[], currDir: string) {
+    super(img, ob, id, pos, currDir, true);
+    this.skin = Math.floor(Math.random() * 6)
+    this.currDir = Math.random() >= 0.5 ? 'right' : 'left';
+    this.el.className = 'baloon';
+  }
+  moveBaloon(obj: object) {
+    if (this.repeat) {
+      const dirs = ['left', 'up', 'right', 'down'];
+      if (obj[this.currDir]) {
+        this.goTo(
+          this.pos[0] +
+            (this.currDir === 'left' ? -1 : this.currDir === 'right' ? 1 : 0),
+          this.pos[1] +
+            (this.currDir === 'up' ? -1 : this.currDir === 'down' ? 1 : 0)
+        );
+      } else {
+        this.currDir = dirs[Math.round(Math.random() * 3)];
+        return;
+      }
+      if (Math.random() >= 0.8) {
+        this.currDir = dirs[Math.round(Math.random() * 3)];
+      }
+    }
+  }
+}
+
+export class AnimPlayer extends Anim {
+  hitbox?: object;
+  constructor(img: CanvasImageSource, ob: { frames: any; times: any; repeat: any }, pos: number[], currDir: string) {
+    super(img, ob, 'player', pos, currDir, true);
+    this.hitbox = {
+      lt: [pos[0] * (dsplySize / 2), pos[1] * (dsplySize / 2)],
+      rt: [(pos[0] + 1) * (dsplySize / 2), pos[1] * (dsplySize / 2)],
+      lb: [pos[0] * (dsplySize / 2), (pos[1] + 1) * (dsplySize / 2)],
+      rb: [(pos[0] + 1) * (dsplySize / 2), (pos[1] + 1) * (dsplySize / 2)],
+    };
+  }
+  movePlayer(dir: string, xyMove: number[]) {
+    let left = parseInt(this.el.style.left.substring(0, this.el.style.left.length - 2));
+    let top = parseInt(this.el.style.top.substring(0, this.el.style.top.length - 2));
+    left = left + xyMove[0];
+    top = top + xyMove[1];
+    this.el.style.left = left + 'px';
+    this.el.style.top = top + 'px';
+    helper.id("test")!.style.transform = `translate(calc(50% - ${helper.size}px - ${left}px),${-top}px)`
+    dir !== 'stay' ? (this.currDir = dir) : null;
+    this.pos = [
+      Math.round((left + 14) / dsplySize),
+      Math.round((top + 14) / dsplySize),
+    ];
+    this.hitbox = {
+      lt: [left, top],
+      rt: [left + dsplySize / 2, top],
+      lb: [left, top + dsplySize / 1.3],
+      rb: [left + dsplySize / 2, top + dsplySize / 1.3],
+    };
   }
 }
