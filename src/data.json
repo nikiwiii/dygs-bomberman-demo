@@ -167,7 +167,7 @@
       ]
     },
     "times": [2, 2, 2, 2, 2, 2, 2],
-    "repeat": false
+    "repeat": true
   },
   "dead_player": {
     "frames": {

@@ -312,7 +312,20 @@ h1 {
   transform: translate(0,-10%) scale(.7);
   }
 }
-
+@keyframes powered {
+  0% {
+  filter: drop-shadow(2px 2px 1px black) drop-shadow(0 0 0px orange) sepia(0);
+  }
+  33% {
+  filter: drop-shadow(2px 2px 1px black) drop-shadow(0 0 10px orange) sepia(.5);
+  }
+  66% {
+  filter: drop-shadow(2px 2px 1px black) drop-shadow(0 0 10px orange) sepia(.5);
+  }
+  100% {
+  filter: drop-shadow(2px 2px 1px black) drop-shadow(0 0 0px orange) sepia(0);
+  }
+}
 @keyframes wobble-tk {
   0% {
     transform: translate(-50%, 0);

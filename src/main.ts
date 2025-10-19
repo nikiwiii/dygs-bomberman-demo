@@ -293,10 +293,10 @@ const allatPlayerMoveShi = () => {
       directions[moveBinds.indexOf(currKey)],
       xyMove
     );
-    allSprites.baloons.forEach((e: { pos: any[] }) => {
+    allSprites.baloons.forEach((e: { pos: any[]; currDir: string }) => {
       if (
         e.pos[0] === allSprites.player.pos[0] &&
-        e.pos[1] === allSprites.player.pos[1]
+        e.pos[1] === allSprites.player.pos[1] && e.currDir !== "dead"
       ) killPlayer();
       else if (
         gameBoard[allSprites.player.pos[1]][allSprites.player.pos[0]] == 5
@@ -313,6 +313,8 @@ const allatPlayerMoveShi = () => {
         help.id("lvl")!.innerHTML = `${bombUp+1}`
         help.id("upgrade")!.src = ""
         help.id("upgrade")!.src = "/img/arrgif.gif"
+        help.id("player")!.style.animation = "1s linear powered"
+        setTimeout(() => help.id("player")!.style.animation = "none", 2000);
       }
     });
   }
@@ -359,11 +361,13 @@ const explode = async (x: number, y: number) => {
 };
 
 const tileExplosion = (x: number, y: number, i: number) => {
+  let goOn = true
   if (gameBoard[y][x] !== 3 && x > 0 && y > 0 && x < modes[currMode].width && y < modes[currMode].height) {
     const dirs = ["middle", "left", "top", "right", "down", "midleft", "midtop", "midright", "middown"]
     if (gameBoard[y][x] == 4) {
       help.id(`brick${y},${x}`)!.style.display = 'none';
       allSprites.desBrick.push(new Anim(img, data.brick_des, `d_brick`, [x,y], "right", true));
+      goOn = false
     }
     flameCount++
     allSprites.flames.push(new Anim(img, data.explosion, `explosion${flameCount}`, [x,y], dirs[i], true));
@@ -372,17 +376,17 @@ const tileExplosion = (x: number, y: number, i: number) => {
     allSprites.baloons.forEach((e: Anim) => e.pos[0] == x && e.pos[1] == y ? killBaloon(e) : null);
     gameBoard[y][x] = 5;
   }
-  return gameBoard[y][x] !== 3;
+  return gameBoard[y][x] !== 3 && goOn;
 };
 
 const clearFlames = async (s: number, e: number) => {
-  await new Promise((r) => setTimeout(r, 700));
+  await new Promise((r) => setTimeout(r, 540));
   flamePoses.forEach((e) => {
     gameBoard[e[1]][e[0]] = 2;
     flameCount--
   });
   flamePoses = [];
-  allSprites.flames.toSpliced(0, e-s).forEach((f: { vanish: () => any; }) => f.vanish());
+  allSprites.flames.slice(0, e-s).forEach((f: { vanish: () => any; }) => f.vanish());
   allSprites.flames.splice(0, e-s)
 };
 
@@ -400,30 +404,32 @@ const killPlayer = () => {
 };
 
 const killBaloon = async (e: Anim) => {
-  currKills++
-  baloonCount--;
-  e.currDir = 'dead';
-  e.actFrame = 0;
-  e.repeat = false;
+  if (e.currDir !== "dead") {
+    currKills++
+    baloonCount--;
+    e.currDir = 'dead';
+    e.actFrame = 0;
+    e.repeat = false;
 
-  help.query<HTMLDivElement>('#killcount' )!.innerHTML = `${modes[currMode].opp - baloonCount}/${modes[currMode].opp}`;
-  score += currKills * 50
-  help.id("score")!.innerHTML = score.toString()
-  if (baloonCount == 0) endGame()
-  switch (currKills) {
-    case 1:
-      break
-    case 2:
-      comment("dk");
-      break
-    case 3:
-      comment("tk");
-      break
-    case 4:
-      comment("qk");
-      break
-    default:
-      comment("ik");
+    help.query<HTMLDivElement>('#killcount' )!.innerHTML = `${modes[currMode].opp - baloonCount}/${modes[currMode].opp}`;
+    score += currKills * 50
+    help.id("score")!.innerHTML = score.toString()
+    if (baloonCount == 0) endGame()
+    switch (currKills) {
+      case 1:
+        break
+      case 2:
+        comment("dk");
+        break
+      case 3:
+        comment("tk");
+        break
+      case 4:
+        comment("qk");
+        break
+      default:
+        comment("ik");
+    }
   }
 };
 
@@ -467,6 +473,7 @@ const endGame = () => {
   }
   help.id("time2")!.innerHTML = `${time.toString()}s`
   help.id("score2")!.innerHTML = score.toString()
+  help.id("powups")!.innerHTML = `${bombUp}`
 }
 
 const playerLeave = () => {

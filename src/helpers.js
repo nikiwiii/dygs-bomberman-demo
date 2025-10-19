@@ -44,6 +44,7 @@ export class Helper {
     setupPrettyStuff(currMode, modes) {
         const colors = ["green", "#5c8000", "#806400"];
         const filters = ["", "sepia(.5)", "sepia(.5) hue-rotate(320deg) brightness(0.7) saturate(2.5)"];
+        this.id("lvl").innerHTML = `1`;
         this.query(".title1").style.opacity = "1";
         this.query(".title2").style.opacity = "1";
         this.id("starter").innerHTML = "START";

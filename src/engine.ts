@@ -70,15 +70,9 @@ export class Anim {
   }
 
   goTo(x: number, y: number) {
-    if (this.destId == 'player') {
-      this.el.style.top = dsplySize * y + 'px';
-      this.el.style.left = dsplySize * x + 'px';
-    } else {
-      const el: HTMLElement = document.getElementById(y + ',' + x)!;
-      this.el.style.top = el.style.top;
-      this.el.style.left = el.style.left;
-      x == 0 && y == 0 ? this.el.style.opacity = "0%" : this.el.style.opacity = "100%"
-    }
+    const el: HTMLElement = document.getElementById(y + ',' + x)!;
+    this.el.style.top = el.style.top;
+    this.el.style.left = el.style.left;
     this.pos = [x, y];
   }
 
@@ -162,5 +156,10 @@ export class AnimPlayer extends Anim {
       lb: [left, top + dsplySize / 1.3],
       rb: [left + dsplySize / 2, top + dsplySize / 1.3],
     };
+  }
+  goTo(x: number, y: number) {
+    this.el.style.top = dsplySize * y + 'px';
+    this.el.style.left = dsplySize * x + 'px';
+    this.pos = [x,y]
   }
 }
