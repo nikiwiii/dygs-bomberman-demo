@@ -68,7 +68,9 @@ export class Helper {
         this.query(".title2").style.color = "orange";
         this.query(".title1").style.background = "url(/img/intro.gif)";
         this.query(".title2").style.background = "url(/img/intro.gif)";
+        this.id("loading").style.opacity = "0";
         setTimeout(() => {
+            this.id("loading").style.display = "none";
             this.query(".title1").style.background = "transparent";
             this.query(".title2").style.background = "transparent";
             this.query(".title1").style.textShadow = "5px 5px 0px teal";

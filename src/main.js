@@ -53,6 +53,7 @@ window.onload = () => {
     window.addEventListener("contextmenu", e => e.preventDefault());
     activateControls();
     initGame();
+    help.id("wasd").addEventListener("click", () => mobileControls());
 };
 const initGame = () => {
     help.setupPrettyStuff(currMode, modes);
@@ -79,7 +80,6 @@ const initGame = () => {
             help.id(e).onclick = () => modeChoice(i);
             i === currMode ? help.id(e).classList.add("active") : null;
         });
-        help.id("wasd").addEventListener("click", () => mobileControls());
         clearTimeout(frameInterval);
         clearInterval(baloonMover);
         clearInterval(moveInterval);
@@ -122,6 +122,7 @@ const start = () => {
         started = true;
         help.query(".title1").style.opacity = "0";
         help.query(".title2").style.opacity = "0";
+        allSprites.player.movePlayer("right", [0, 0]);
         timeCounter = setInterval(() => {
             time++;
             help.id("time").innerHTML = `${time.toString()}s`;
@@ -269,8 +270,8 @@ const allatPlayerMoveShi = () => {
                 powUpPoses[i] = [0, 0];
                 bombUp++;
                 help.id("lvl").innerHTML = `${bombUp + 1}`;
-                help.id("upgrade").src = "";
-                help.id("upgrade").src = "/img/arrgif.gif";
+                help.query("#upgrade").src = "";
+                help.query("#upgrade").src = "/img/arrgif.gif";
                 help.id("player").style.animation = "1s linear powered";
                 setTimeout(() => help.id("player").style.animation = "none", 2000);
             }

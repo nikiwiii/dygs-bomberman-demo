@@ -93,7 +93,9 @@ export class Helper {
     this.query<HTMLElement>(".title2")!.style.color = "orange"
     this.query<HTMLElement>(".title1")!.style.background = "url(/img/intro.gif)"
     this.query<HTMLElement>(".title2")!.style.background = "url(/img/intro.gif)"
+    this.id("loading")!.style.opacity = "0"
     setTimeout(() => {
+      this.id("loading")!.style.display = "none"
       this.query<HTMLElement>(".title1")!.style.background = "transparent"
       this.query<HTMLElement>(".title2")!.style.background = "transparent"
       this.query<HTMLElement>(".title1")!.style.textShadow = "5px 5px 0px teal"
