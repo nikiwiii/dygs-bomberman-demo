@@ -22,7 +22,6 @@
 body {
   overflow: hidden;
   background-color: black;
-  display: flex;
 }
 div,
 canvas {
@@ -34,16 +33,14 @@ canvas {
 #app {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 100%;
-  height: fit-content;
-  overflow:visible;
+  height: 100vh;
+  overflow:hidden;
   transform: scale(5);
   transition: all 1s ease-in-out;
   opacity: 0;
-  align-self: center;
-  margin-top: 50vh;
 }
 #test {
   width: fit-content;

@@ -86,7 +86,7 @@ export class Helper {
     this.query('#killcount')!.innerHTML = `0/${modes[currMode].opp}`;
     this.query('#test')!.innerHTML = ``;
     this.query('#sprites')!.innerHTML = ``;
-    this.id("app")!.style.transform = "scale(1) translateY(calc(var(--size) * 10 / 2 * -1))"
+    this.id("app")!.style.transform = "scale(1) translateY(-5vh)"
     this.id("app")!.style.opacity = "1"
     this.id("test")!.style.transform = `translate(0,0)`
     this.query<HTMLElement>(".title1")!.style.color = "aqua"
