@@ -35,12 +35,12 @@ let time = 0;
 let timeCounter = 0;
 let score = 0;
 let img;
-const nodes = ["0,9", "0,10", "0,11"];
+let nodes = [];
 let frameInterval = 0;
 const modes = [
-    { width: 21, height: 9, opp: 10 },
     { width: 21, height: 11, opp: 20 },
     { width: 21, height: 21, opp: 50 },
+    { width: 31, height: 93, opp: 250 },
 ];
 let currMode = 0;
 let currKills = 0;
@@ -56,6 +56,7 @@ window.onload = () => {
     help.id("wasd").addEventListener("click", () => mobileControls());
 };
 const initGame = () => {
+    nodes = [`0,${Math.floor(modes[currMode].width / 2) - 1}`, `0,${Math.floor(modes[currMode].width / 2)}`, `0,${Math.floor(modes[currMode].width / 2) + 1}`];
     help.setupPrettyStuff(currMode, modes);
     time = 0;
     score = 0;
