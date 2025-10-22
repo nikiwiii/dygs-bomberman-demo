@@ -280,12 +280,23 @@ const allatPlayerMoveShi = () => {
     }
 };
 const ActivateBaloon = (baloon, pos) => {
-    const obj = {
-        left: gameBoard[pos[1]][pos[0] - 1] === 2 ? true : false,
-        up: gameBoard[pos[1] - 1][pos[0]] === 2 ? true : false,
-        right: gameBoard[pos[1]][pos[0] + 1] === 2 ? true : false,
-        down: gameBoard[pos[1] + 1][pos[0]] === 2 ? true : false,
-    };
+    let obj;
+    if (baloon.skin == 5) { //ghost
+        obj = {
+            left: gameBoard[pos[1]][pos[0] - 1] === 2 || gameBoard[pos[1]][pos[0] - 1] === 4 ? true : false,
+            up: gameBoard[pos[1] - 1][pos[0]] === 2 || gameBoard[pos[1] - 1][pos[0]] === 4 ? true : false,
+            right: gameBoard[pos[1]][pos[0] + 1] === 2 || gameBoard[pos[1]][pos[0] + 1] === 4 ? true : false,
+            down: gameBoard[pos[1] + 1][pos[0]] === 2 || gameBoard[pos[1] + 1][pos[0]] === 4 ? true : false,
+        };
+    }
+    else {
+        obj = {
+            left: gameBoard[pos[1]][pos[0] - 1] === 2 ? true : false,
+            up: gameBoard[pos[1] - 1][pos[0]] === 2 ? true : false,
+            right: gameBoard[pos[1]][pos[0] + 1] === 2 ? true : false,
+            down: gameBoard[pos[1] + 1][pos[0]] === 2 ? true : false,
+        };
+    }
     baloon.moveBaloon(obj);
     if (baloon.pos[0] === allSprites.player.pos[0] &&
         baloon.pos[1] === allSprites.player.pos[1])

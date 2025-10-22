@@ -67,25 +67,35 @@ export class Anim {
 export class AnimBaloon extends Anim {
     constructor(img, ob, id, pos, currDir) {
         super(img, ob, id, pos, currDir, true);
-        this.skin = Math.floor(Math.random() * 6);
+        this.skin = Math.floor(Math.random() * 6); //5 to ghost, 3 to pomarancz
         this.currDir = Math.random() >= 0.5 ? 'right' : 'left';
         this.el.className = 'baloon';
+        this.skin === 5 ? this.el.classList.add('ghost') : null;
     }
     moveBaloon(obj) {
         if (this.repeat) {
             const dirs = ['left', 'up', 'right', 'down'];
             if (obj[this.currDir]) {
-                this.goTo(this.pos[0] +
-                    (this.currDir === 'left' ? -1 : this.currDir === 'right' ? 1 : 0), this.pos[1] +
-                    (this.currDir === 'up' ? -1 : this.currDir === 'down' ? 1 : 0));
+                this.goTo(this.pos[0] + (this.currDir === 'left' ? -1 : this.currDir === 'right' ? 1 : 0), this.pos[1] + (this.currDir === 'up' ? -1 : this.currDir === 'down' ? 1 : 0));
             }
             else {
-                this.currDir = dirs[Math.round(Math.random() * 3)];
+                if (this.skin == 3) { //pomarancz
+                    Object.keys(obj).forEach(key => {
+                        if (!obj[key])
+                            delete obj[key];
+                    });
+                    if (Object.keys(obj).length) {
+                        this.currDir = Object.keys(obj)[Math.floor(Math.random() * (Object.keys(obj).length))];
+                        // !this.currDir ? console.log(Object.keys(obj), Math.random() * (Object.keys(obj).length-1), Object.keys(obj).length) : null
+                        this.goTo(this.pos[0] + (this.currDir === 'left' ? -1 : this.currDir === 'right' ? 1 : 0), this.pos[1] + (this.currDir === 'up' ? -1 : this.currDir === 'down' ? 1 : 0));
+                    }
+                }
+                else
+                    this.currDir = dirs[Math.floor(Math.random() * 4)];
                 return;
             }
-            if (Math.random() >= 0.8) {
-                this.currDir = dirs[Math.round(Math.random() * 3)];
-            }
+            if (Math.random() >= 0.8 || (Math.random() >= 0.6 && this.skin == 3))
+                this.currDir = dirs[Math.floor(Math.random() * 4)];
         }
     }
 }

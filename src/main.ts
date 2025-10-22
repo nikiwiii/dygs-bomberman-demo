@@ -203,7 +203,6 @@ const placeBricks = (n: number) => {
 const moveBinds = [65, 87, 68, 83];
 const activateControls = () => {
   addEventListener('keypress', handleBinds);
-  
   addEventListener('keyup', (e) => {
     if (moveBinds.includes(e.which)) {
       controller.splice(controller.indexOf(e.which), 1);
@@ -238,53 +237,25 @@ const allatPlayerMoveShi = () => {
       switch (key) {
         case moveBinds[0]:
           temp = help.checkMoveAvail(
-            hb.lt[1],
-            hb.lt[0] - 2 * velocity,
-            hb.lb[1],
-            hb.lb[0] - 2 * velocity,
-            -velocity,
-            gameBoard,
-            dsplySize
-          );
+            hb.lt[1], hb.lt[0] - 2 * velocity, hb.lb[1], hb.lb[0] - 2 * velocity, -velocity, gameBoard, dsplySize);
           if (typeof temp === 'string') directions[0] = temp;
           else xyMove[0] = temp;
           break;
         case moveBinds[1]:
           temp = help.checkMoveAvail(
-            hb.lt[1] - 2 * velocity,
-            hb.lt[0],
-            hb.rt[1] - 2 * velocity,
-            hb.rt[0],
-            -velocity,
-            gameBoard,
-            dsplySize
-          );
+            hb.lt[1] - 2 * velocity, hb.lt[0], hb.rt[1] - 2 * velocity, hb.rt[0], -velocity, gameBoard, dsplySize);
           if (typeof temp === 'string') directions[1] = temp;
           else xyMove[1] = temp;
           break;
         case moveBinds[2]:
           temp = help.checkMoveAvail(
-            hb.rt[1],
-            hb.rt[0] + velocity,
-            hb.rb[1],
-            hb.rb[0] + velocity,
-            velocity,
-            gameBoard,
-            dsplySize
-          );
+            hb.rt[1], hb.rt[0] + velocity, hb.rb[1], hb.rb[0] + velocity, velocity, gameBoard, dsplySize);
           if (typeof temp === 'string') directions[2] = temp;
           else xyMove[0] = temp;
           break;
         case moveBinds[3]:
           temp = help.checkMoveAvail(
-            hb.lb[1] + velocity,
-            hb.lb[0],
-            hb.rb[1] + velocity,
-            hb.rb[0],
-            velocity,
-            gameBoard,
-            dsplySize
-          );
+            hb.lb[1] + velocity, hb.lb[0], hb.rb[1] + velocity, hb.rb[0], velocity, gameBoard, dsplySize);
           if (typeof temp === 'string') directions[3] = temp;
           else xyMove[1] = temp;
           break;
@@ -323,12 +294,22 @@ const allatPlayerMoveShi = () => {
 };
 
 const ActivateBaloon = (baloon: AnimBaloon, pos: number[]) => {
-  const obj = {
-    left: gameBoard[pos[1]][pos[0] - 1] === 2 ? true : false,
-    up: gameBoard[pos[1] - 1][pos[0]] === 2 ? true : false,
-    right: gameBoard[pos[1]][pos[0] + 1] === 2 ? true : false,
-    down: gameBoard[pos[1] + 1][pos[0]] === 2 ? true : false,
-  };
+  let obj
+  if (baloon.skin == 5) {//ghost
+    obj = {
+      left: gameBoard[pos[1]][pos[0] - 1] === 2 || gameBoard[pos[1]][pos[0] - 1] === 4 ? true : false,
+      up: gameBoard[pos[1] - 1][pos[0]] === 2 || gameBoard[pos[1] - 1][pos[0]] === 4 ? true : false,
+      right: gameBoard[pos[1]][pos[0] + 1] === 2 || gameBoard[pos[1]][pos[0] + 1] === 4 ? true : false,
+      down: gameBoard[pos[1] + 1][pos[0]] === 2 || gameBoard[pos[1] + 1][pos[0]] === 4 ? true : false,
+    };
+  } else {
+    obj = {
+      left: gameBoard[pos[1]][pos[0] - 1] === 2 ? true : false,
+      up: gameBoard[pos[1] - 1][pos[0]] === 2 ? true : false,
+      right: gameBoard[pos[1]][pos[0] + 1] === 2 ? true : false,
+      down: gameBoard[pos[1] + 1][pos[0]] === 2 ? true : false,
+    };
+  }
   baloon.moveBaloon(obj);
   if (
     baloon.pos[0] === allSprites.player.pos[0] &&
